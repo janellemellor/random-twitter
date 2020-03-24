@@ -38,7 +38,7 @@ describe('Tweet routes', () => {
       });
   });
 
-  //GET /api/v1/tweets to get all tweets
+  //GET all tweets
   it('gets all tweets', () => {
     const tweets = [
       { handle: 'my handle',
@@ -65,7 +65,7 @@ describe('Tweet routes', () => {
       });
   });
  
-  //GET /api/v1/tweets/:id to get tweet by ID
+  //GET tweet by ID
   it('gets a tweet by id', () => {
     return Tweet.create({
       handle: 'my handle',
@@ -85,19 +85,31 @@ describe('Tweet routes', () => {
       });
   });
 
+  //PATCH - update a tweet's TEXT only
+  it('updates a tweet', () => {
+    return Tweet.create({
+      handle: 'my handle',
+      text: 'quotes by Ron Swanson'
+    })
+      .then(tweet => {
+        return request(app)
+          .patch(`/api/v1/tweets/${tweet.id}`)
+          .send({ text: 'my updated quote by Ron Swanson' });
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.any(String),
+          handle: 'my handle',
+          text: 'my updated quote by Ron Swanson',
+          __v: 0
+        });
+      });
+  });
 
 });
 
 
 
 
-
-
-
-
-
-
-
-//PATCH /api/v1/tweets/:id to update a tweet's TEXT only
 
 //DELETE /api/v1/tweets/:id to delete a tweet
