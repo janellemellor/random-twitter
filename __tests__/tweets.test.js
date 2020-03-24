@@ -106,10 +106,23 @@ describe('Tweet routes', () => {
       });
   });
 
+  //DELETE /api/v1/tweets/:id to delete a tweet
+  it('deletes a tweet', () => {
+    return Tweet.create({
+      handle: 'my handle',
+      text: 'quotes by Ron Swanson'
+    })
+      .then(tweet => {
+        return request(app)
+          .delete(`/api/v1/tweets/${tweet.id}`);
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.any(String),
+          handle: 'my handle',
+          text: expect.any(String),
+          __v: 0
+        });
+      });
+  });
 });
-
-
-
-
-
-//DELETE /api/v1/tweets/:id to delete a tweet
