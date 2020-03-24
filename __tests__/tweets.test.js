@@ -64,6 +64,28 @@ describe('Tweet routes', () => {
         });
       });
   });
+ 
+  //GET /api/v1/tweets/:id to get tweet by ID
+  it('gets a tweet by id', () => {
+    return Tweet.create({
+      handle: 'my handle',
+      text: 'quotes by Ron Swanson'
+    })
+      .then(tweet => {
+        return request(app)
+          .get(`/api/v1/tweets/${tweet.id}`);
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.any(String),
+          handle: expect.any(String),
+          text: expect.any(String),
+          __v: 0
+        });
+      });
+  });
+
+
 });
 
 
@@ -74,7 +96,7 @@ describe('Tweet routes', () => {
 
 
 
-//GET /api/v1/tweets/:id to get tweet by ID
+
 
 //PATCH /api/v1/tweets/:id to update a tweet's TEXT only
 
