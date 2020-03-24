@@ -38,15 +38,41 @@ describe('Tweet routes', () => {
       });
   });
 
+  //GET /api/v1/tweets to get all tweets
+  it('gets all tweets', () => {
+    const tweets = [
+      { handle: 'my handle',
+        text: 'quotes by Ron Swanson' },
+      { handle: 'my handle',
+        text: 'more quotes by Ron Swanson' },
+      { handle: 'my handle',
+        text: 'even more quotes by Ron Swanson' },  
+    ];
+
+    return Tweet.create(tweets)
+      .then(() => {
+        return request(app)
+          .get('/api/v1/tweets');
+      })
+      .then(res => {
+        tweets.forEach(tweet => {
+          expect(res.body).toContainEqual(
+            { _id: expect.any(String),
+              ...tweet,
+              __v: 0
+            }); 
+        });
+      });
+  });
 });
 
 
 
 
 
-//POST /api/v1/tweets to create a new tweet
 
-//GET /api/v1/tweets to get all tweets
+
+
 
 //GET /api/v1/tweets/:id to get tweet by ID
 
