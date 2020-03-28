@@ -67,6 +67,33 @@ describe('comment routes', () => {
       });
   });
 
-  
+
+  it('updates a comment by id', async() => {
+    const tweet = await Tweet.create({
+      handle: 'my handle',
+      text: 'quotes by Ron Swanson'
+    });
+
+    const comment = await Comment.create({
+      tweetId: tweet._id,
+      handle: 'commentsRfun',
+      text: 'I like to comment comment'
+    });
+
+    return request(app)
+      .patch(`/api/v1/comments/${comment._id}`)
+      .send({ text: 'I do not like to comment anymore' })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.any(String),
+          tweetId: tweet.id,
+          handle: 'commentsRfun',
+          text: 'I do not like to comment anymore',
+          __v: 0
+        });
+      });
+  });
+
+
 
 });
