@@ -5,6 +5,7 @@ const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
 const Tweet = require('../lib/models/Tweet');
+const Comment = require('../lib/models/Comment');
 
 
 describe('Tweet routes', () => {
@@ -38,27 +39,27 @@ describe('Tweet routes', () => {
       });
   });
 
+  //it Creates a tweet with a random quote
+
   //GET all tweets
-  it('gets all tweets', () => {
-    const tweets = [
+  it('gets all tweets', async() => {
+    const tweets = await Tweet.create([
       { handle: 'my handle',
         text: 'quotes by Ron Swanson' },
       { handle: 'my handle',
         text: 'more quotes by Ron Swanson' },
       { handle: 'my handle',
         text: 'even more quotes by Ron Swanson' },  
-    ];
+    ]);
 
-    return Tweet.create(tweets)
-      .then(() => {
-        return request(app)
-          .get('/api/v1/tweets');
-      })
+    return request(app)
+      .get('/api/v1/tweets')
       .then(res => {
         tweets.forEach(tweet => {
           expect(res.body).toContainEqual(
-            { _id: expect.any(String),
-              ...tweet,
+            { _id: tweet._id.toString(),
+              handle: tweet.handle, 
+              text: tweet.text,
               __v: 0
             }); 
         });
@@ -66,22 +67,29 @@ describe('Tweet routes', () => {
   });
  
   //GET tweet by ID
-  it('gets a tweet by id', () => {
-    return Tweet.create({
+  it('gets a tweet by id', async() => {
+    const tweet = await Tweet.create({
       handle: 'my handle',
       text: 'quotes by Ron Swanson'
-    })
-      .then(tweet => {
-        return request(app)
-          .get(`/api/v1/tweets/${tweet.id}`);
-      })
+    });
+
+    const comments = await Comment.create([{
+      tweetId: tweet._id,
+      handle: 'commentsRfun',
+      text: 'I like to comment comment'
+    }]);
+
+    return request(app)
+      .get(`/api/v1/tweets/${tweet._id}`)
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String),
-          handle: expect.any(String),
-          text: expect.any(String),
+          handle: 'my handle',
+          text: 'quotes by Ron Swanson',
+          comments: expect.any(Array),
           __v: 0
         });
+        expect(res.body.comments).toEqual(JSON.parse(JSON.stringify(comments)));
       });
   });
 
@@ -126,3 +134,4 @@ describe('Tweet routes', () => {
       });
   });
 });
+
