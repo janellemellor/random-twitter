@@ -21,7 +21,6 @@ describe('Tweet routes', () => {
     return mongoose.connection.close();
   });
 
-  //POST - new tweet
   it('creates a new tweet', () => {
     return request(app)
       .post('/api/v1/tweets')
@@ -39,9 +38,7 @@ describe('Tweet routes', () => {
       });
   });
 
-  //it Creates a tweet with a random quote
 
-  //GET all tweets
   it('gets all tweets', async() => {
     const tweets = await Tweet.create([
       { handle: 'my handle',
@@ -66,14 +63,13 @@ describe('Tweet routes', () => {
       });
   });
  
-  //GET tweet by ID
   it('gets a tweet by id', async() => {
     const tweet = await Tweet.create({
       handle: 'my handle',
       text: 'quotes by Ron Swanson'
     });
 
-    const comments = await Comment.create([{
+    await Comment.create([{
       tweetId: tweet._id,
       handle: 'commentsRfun',
       text: 'I like to comment comment'
@@ -92,7 +88,6 @@ describe('Tweet routes', () => {
       });
   });
 
-  //PATCH - update a tweet's TEXT only
   it('updates a tweet', async() => {
     const tweet = await Tweet.create({
       handle: 'my handle',
@@ -112,7 +107,6 @@ describe('Tweet routes', () => {
       });
   });
 
-  //DELETE /api/v1/tweets/:id to delete a tweet
   it('deletes a tweet', async() => {
     const tweet = await Tweet.create({
       handle: 'my handle',
