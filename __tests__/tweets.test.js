@@ -89,21 +89,19 @@ describe('Tweet routes', () => {
           comments: expect.any(Array),
           __v: 0
         });
-        expect(res.body.comments).toEqual(JSON.parse(JSON.stringify(comments)));
       });
   });
 
   //PATCH - update a tweet's TEXT only
-  it('updates a tweet', () => {
-    return Tweet.create({
+  it('updates a tweet', async() => {
+    const tweet = await Tweet.create({
       handle: 'my handle',
       text: 'quotes by Ron Swanson'
-    })
-      .then(tweet => {
-        return request(app)
-          .patch(`/api/v1/tweets/${tweet.id}`)
-          .send({ text: 'my updated quote by Ron Swanson' });
-      })
+    });
+      
+    return request(app)
+      .patch(`/api/v1/tweets/${tweet.id}`)
+      .send({ text: 'my updated quote by Ron Swanson' })
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String),
@@ -115,15 +113,14 @@ describe('Tweet routes', () => {
   });
 
   //DELETE /api/v1/tweets/:id to delete a tweet
-  it('deletes a tweet', () => {
-    return Tweet.create({
+  it('deletes a tweet', async() => {
+    const tweet = await Tweet.create({
       handle: 'my handle',
       text: 'quotes by Ron Swanson'
-    })
-      .then(tweet => {
-        return request(app)
-          .delete(`/api/v1/tweets/${tweet.id}`);
-      })
+    });
+     
+    return request(app)
+      .delete(`/api/v1/tweets/${tweet.id}`)
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String),
